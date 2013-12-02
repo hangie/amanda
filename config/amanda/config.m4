@@ -35,6 +35,9 @@ AC_DEFUN([AMANDA_GET_SVN_INFO],
 
     AC_PATH_PROG(SVN, svn,, $LOCSYSPATH)
     AC_MSG_CHECKING([Subversion revision information])
+    if test ! -d common-src ; then
+        mkdir common-src
+    fi
     if test -d $srcdir/.svn -a -n "$SVN" && (cd $srcdir > /dev/null ; $SVN info . ) > conftemp.svn; then
 	SVN_REV=`$GREP Revision: conftemp.svn|cut -d: -f 2|cut -c2-`
 	SVN_URL=`$GREP URL: conftemp.svn|cut -d: -f 2-|cut -c2-`
