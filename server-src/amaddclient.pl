@@ -31,6 +31,7 @@ my $tmpdir="@AMANDA_DBGDIR@";
 
 my $prefix="@prefix@";
 my $localstatedir="@localstatedir@";
+my $amdatadir = "@amdatadir@";
 my $amandahomedir="$localstatedir/lib/amanda";
 
 my $amanda_user="@CLIENT_LOGIN@";
@@ -480,7 +481,7 @@ if ( $exit_value !=0 ) {
 }
 }
 
-&mprint ("File /var/lib/amanda/example/xinetd.amandaclient contains the latest Amanda client daemon configuration.\n");
+&mprint ("File $amdatadir/example/xinetd.amandaclient contains the latest Amanda client daemon configuration.\n");
 &mprint ("Please merge it to /etc/xinetd.d/amandaclient.\n");
  
 $ENV{'PATH'} = $oldPATH;

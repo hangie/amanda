@@ -168,3 +168,7 @@ extern int		jndex_fetch_post_backup_media (FILE *fp);
 extern int		apply_rules (struct ndm_job_param *job, char *rules);
 extern int		help_rules (void);
 #endif /* !NDMOS_OPTION_NO_CONTROL_AGENT */
+
+#ifdef __CYGWIN__
+GLOBAL void ndmos_set_o_tape_limit(off_t*);
+#endif

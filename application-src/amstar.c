@@ -999,7 +999,7 @@ static GPtrArray *amstar_build_argv(
     {
 	char tmppath[PATH_MAX];
 
-	cygwin_conv_to_full_posix_path(dirname, tmppath);
+	cygwin_conv_path(CCP_WIN_A_TO_POSIX | CCP_ABSOLUTE, dirname, tmppath, PATH_MAX-1);
 	g_ptr_array_add(argv_ptr, stralloc(tmppath));
     }
 #else

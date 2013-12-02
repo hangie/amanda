@@ -67,7 +67,27 @@ struct simu_gap {
 
 /* we sneak a peek at this global variable - probably not the best way, but
  * it works */
+#ifdef __CYGWIN__
+/* extern off_t o_tape_limit; */
+/* MARK:  Change this access to a reference instead. */
+off_t*  o_tape_limit_ptr = 0;
+
+off_t
+ndmos_o_tape_limit()
+{
+  off_t val = 0;
+  if (o_tape_limit_ptr)
+    val = *o_tape_limit_ptr;
+
+  return val;
+}
+
+#define O_TAPE_LIMIT  ndmos_o_tape_limit()
+
+#else
 extern off_t o_tape_limit;
+#define O_TAPE_LIMIT  o_tape_limit
+#endif
 
 int
 ndmos_tape_initialize (struct ndm_session *sess)
@@ -227,13 +247,13 @@ ndmos_tape_open (struct ndm_session *sess, char *drive_name, int will_write)
 	ta->tape_state.space_remain.valid = NDMP9_VALIDITY_INVALID;
 
 	ta->sent_leom = 0;
-	if (o_tape_limit) {
-	    g_assert(o_tape_limit > st.st_size);
+	if (O_TAPE_LIMIT) {
+	    g_assert(O_TAPE_LIMIT > st.st_size);
 
 	    ta->tape_state.total_space.valid = NDMP9_VALIDITY_VALID;
-	    ta->tape_state.total_space.value = o_tape_limit;
+	    ta->tape_state.total_space.value = O_TAPE_LIMIT;
 	    ta->tape_state.space_remain.valid = NDMP9_VALIDITY_VALID;
-	    ta->tape_state.space_remain.value = o_tape_limit - st.st_size;
+	    ta->tape_state.space_remain.value = O_TAPE_LIMIT - st.st_size;
 	}
 
 	return NDMP9_NO_ERR;
@@ -580,16 +600,16 @@ ndmos_tape_write (struct ndm_session *sess,
 
 	cur_pos = lseek (ta->tape_fd, (off_t)0, 1);
 
-	if (o_tape_limit) {
+	if (O_TAPE_LIMIT) {
 	    /* if cur_pos is past LEOM, but we haven't sent NDMP9_EOM_ERR yet,
 	     * then do so now */
-	    if (!ta->sent_leom && cur_pos > o_tape_limit - TAPE_SIM_LOGICAL_EOM) {
+	    if (!ta->sent_leom && cur_pos > O_TAPE_LIMIT - TAPE_SIM_LOGICAL_EOM) {
 		ta->sent_leom = 1;
 		return NDMP9_EOM_ERR;
 	    }
 
 	    /* if this write will put us over PEOM, then send NDMP9_IO_ERR */
-	    if ((off_t)(cur_pos + sizeof gap + count) > o_tape_limit) {
+	    if ((off_t)(cur_pos + sizeof gap + count) > O_TAPE_LIMIT) {
 		return NDMP9_IO_ERR;
 	    }
 	}
@@ -639,8 +659,8 @@ ndmos_tape_write (struct ndm_session *sess,
 	    return NDMP9_IO_ERR;
 	lseek (ta->tape_fd, cur_pos, 0);
 
-	if (o_tape_limit) {
-	    ta->tape_state.space_remain.value = o_tape_limit - cur_pos;
+	if (O_TAPE_LIMIT) {
+	    ta->tape_state.space_remain.value = O_TAPE_LIMIT - cur_pos;
 	}
 
 	ta->weof_on_close = 1;
@@ -670,11 +690,11 @@ ndmos_tape_wfm (struct ndm_session *sess)
 
 	cur_pos = lseek (ta->tape_fd, (off_t)0, 1);
 
-	if (o_tape_limit) {
+	if (O_TAPE_LIMIT) {
 	    /* note: filemarks *never* trigger NDMP9_EOM_ERR */
 
 	    /* if this write will put us over PEOM, then send NDMP9_IO_ERR */
-	    if ((off_t)(cur_pos + sizeof gap) > o_tape_limit) {
+	    if ((off_t)(cur_pos + sizeof gap) > O_TAPE_LIMIT) {
 		return NDMP9_IO_ERR;
 	    }
 	}
@@ -721,8 +741,8 @@ ndmos_tape_wfm (struct ndm_session *sess)
 		return NDMP9_IO_ERR;
 	lseek (ta->tape_fd, cur_pos, 0);
 
-	if (o_tape_limit) {
-	    ta->tape_state.space_remain.value = o_tape_limit - cur_pos;
+	if (O_TAPE_LIMIT) {
+	    ta->tape_state.space_remain.value = O_TAPE_LIMIT - cur_pos;
 	}
 
 	return err;

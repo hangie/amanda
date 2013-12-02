@@ -122,6 +122,7 @@ libndmjla = \
 	ndma_tape.c \
 	ndma_robot.c \
 	ndma_robot_simulator.c \
+	ndma_tape_simulator.c \
 	wraplib.c
 
 libndmjlr = \
@@ -167,6 +168,7 @@ libndmjlo = \
 	ndmos_common.c
 
 libndmlib_la_LDFLAGS = -release $(VERSION) $(AS_NEEDED_FLAGS)
+libndmlib_la_LIBADD = ../common-src/libamanda.la
 libndmlib_la_SOURCES = \
 	$(libndmjll) \
 	$(libndmjlp) \
@@ -192,16 +194,14 @@ ndmjob_SOURCES = ndmjob_main.c \
 		      ndmjob_args.c \
 		      ndmjob_job.c \
 		      ndmjob_rules.c \
-		      ndmjob_main_util.c \
-		      ndma_tape_simulator.c
+		      ndmjob_main_util.c
 
 
 amndmjob_SOURCES = amndmjob_main.c \
 		      ndmjob_args.c \
 		      ndmjob_job.c \
 		      ndmjob_rules.c \
-		      ndmjob_main_util.c \
-		      amndma_tape_simulator.c
+		      ndmjob_main_util.c
 
 ndmjob_LDADD = libndmjob.la \
 		   ../common-src/libamanda.la

@@ -584,6 +584,15 @@ struct ndmp_enum_str_table	mode_long_name_table[] = {
 	{ 0 }
 };
 
+extern off_t* o_tape_limit_ptr;
+
+#ifdef __CYGWIN__
+void
+ndmos_set_o_tape_limit(off_t* val)
+{
+  o_tape_limit_ptr = val;
+}
+#endif
 
 int
 handle_long_option (char *str)
@@ -684,6 +693,9 @@ handle_long_option (char *str)
 			error_byebye ("tape-limit argument is required");
 		} else {
 			o_tape_limit = atoi(value);
+#ifdef __CYGWIN__
+			ndmos_set_o_tape_limit(&o_tape_limit);
+#endif
 		}
 	} else {
 		if (value) value[-1] = '=';

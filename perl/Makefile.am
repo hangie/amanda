@@ -62,11 +62,11 @@ html: make_html amperl.css $(PM_FILES)
 
 # Tell libtool to not bother versioning the libs we build, since perl won't
 # pay attention to such things, anyway.
-PERL_EXT_LDFLAGS = -avoid-version -shared
+PERL_EXT_LDFLAGS = -avoid-version -shared -module
 
 # And add any flags the user has requested; on FreeBSD, this pulls in the
 # threading library
-PERL_EXT_LDFLAGS += $(PERLEXTLIBS)
+PERL_EXT_LDFLAGS += $(PERLEXTLIBS) $(AS_NEEDED_FLAGS)
 
 # list our SWIG libraries; these are %included from .swg files
 AMGLUE_SWG = amglue/amglue.swg \
