@@ -31,8 +31,8 @@ if test -d .svn && ( grep Revision: conftemp.svn > /dev/null; ); then
     url=`grep URL: conftemp.svn|cut -d: -f 2-|cut -c2-`
 fi
 
-if test -d .git; then
-    GIT_SHA1=`git rev-parse HEAD | cut -c -8 `
+if test -d $srcdir/.git; then
+    GIT_SHA1=`cd $srcdir ; git rev-parse HEAD | cut -c -8 `
 fi
 
 if test -f FULL_VERSION; then
